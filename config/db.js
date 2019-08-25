@@ -1,3 +1,4 @@
+// this is equivalent to import mongoose from './default.json';
 const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');

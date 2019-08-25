@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://Astro123:Astro123@contactkeeper-xypsd.mongodb.net/test?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://Astro123:Astro123@contactkeeper-xypsd.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "secret"
 }
