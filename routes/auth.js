@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 });
 
 // @route     Post api/auth
-// @desc      Auth user &get token
+// @desc      Auth user & get token
 // @access    Public
 router.post('/', (req, res) => {
   res.send('Log in User');
