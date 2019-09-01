@@ -3,15 +3,25 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+// bring in auth anytime we want to protect a private route
+const auth = require('../middleware/auth');
 const { check, validationResult } = require('express-validator/check');
 
 const User = require('../models/User')
 
 // @route     GET api/auth
 // @desc      Get logged in user
-// @access    Private    
-router.get('/', (req, res) => {
-  res.send('Get logged in user');
+// @access    Private
+// pass in auth as a second parameter to create a protected route  
+router.get('/', auth, async (req, res) => {
+  try {
+    // .select('-password') we return current logged in user data except for password in response
+    const user = await User.findById(req.user.id).select('-password')
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 // @route     Post api/auth
@@ -37,12 +47,14 @@ async (req, res) => {
         return res.status(400).json({ msg: 'Email does not exist'})
       }
 
+      // returns true or false if password and hashed password match
       const isMatch = await bcrypt.compare(password, user.password);
       
       if(!isMatch) {
         return res.status(400).json({ msg: 'Invalid Credentials'});
       }
 
+      // returns token from database if email exists and password matches
       const payload = {
         user: {
           id: user.id

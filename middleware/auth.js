@@ -1,3 +1,5 @@
+// middleware is a function that has access to the request and response object
+// fired off whenever we hit an endpoint and check to see if token is in header
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
@@ -6,9 +8,9 @@ module.exports = function(req, res, next) {
   // get token from header
   const token = req.header('x-auth-token');
 
-  // check if not token
+  // check if token exists
   if(!token) {
-    return res.status(400).json({ msg: 'No token, authorization denied'});
+    return res.status(401).json({ msg: 'No token, authorization denied'});
   }
 
   try {
@@ -17,6 +19,6 @@ module.exports = function(req, res, next) {
     req.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({})
+    res.status(401).json({ msg: 'Token is not valid'});
   }
 }

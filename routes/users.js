@@ -52,11 +52,15 @@ async (req, res) => {
 
     await user.save();
 
+    // object that we want to send using jsonwebtoken
+    // with user id we can access all the contacts that the user has
     const payload = {
       user: {
         id: user.id
       }
     }
+
+    // jwt.sign(payload, secret, [options, callback])
 
     jwt.sign(payload, config.get('jwtSecret'), {
       expiresIn: 360000
