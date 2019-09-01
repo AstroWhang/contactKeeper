@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// user schema, what to record in our db
 const User = require('../models/User');
 const config = require("config");
 
@@ -19,6 +20,7 @@ router.post('/',
   })
 ], 
 async (req, res) => {
+  // creates an error array that goes through the checks set from above
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -27,7 +29,7 @@ async (req, res) => {
   const { name, email, password  } = req.body;
 
   try {
-    // findOne, able to find a user by email variable
+    // findOne, able to find a user by email variable (can use other searches as well: username, name, etc)
     let user = await User.findOne({ email });
 
     if(user) {
@@ -41,8 +43,11 @@ async (req, res) => {
     });
 
     // need var salt in order to encrypt password using bcrypt, 10 = how secure the hash is
+    // salt returns a promise
     const salt = await bcrypt.genSalt(10);
     
+    // bcrypt returns a promise
+    // takes in password and salt as parameters and returns hashed password
     user.password = await bcrypt.hash(password, salt);
 
     await user.save();
